@@ -8,7 +8,7 @@ import ChamadoCardView from "./components/chamadoCardView";
 import url from "./services/api";
 
 const App = () => {
-  console.log(url);
+  console.log("base url: ", url);
   const editarChamadoFormRef = useRef();
   const [chamados, setChamados] = useState([]);
   const [chamadoView, setChamadoView] = useState(null);
