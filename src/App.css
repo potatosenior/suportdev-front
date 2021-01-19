@@ -1,0 +1,209 @@
+body {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: #e6e6e6;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  padding: 0;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.651);
+}
+
+main {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  max-height: 90vh;
+  background-color: #e6e6e6;
+  padding-top: 20px;
+}
+
+.criarChamado {
+  display: flex;
+  flex-direction: column;
+  width: 26%;
+  height: 100%;
+  border: solid 0.6px rgb(133, 133, 133);
+  border-radius: 5px;
+  padding: 10px;
+}
+
+/* --------------- CHAMADOS LISTA  */
+
+.chamados {
+  margin-left: 20px;
+  width: 33%;
+  height: 90vh;
+  overflow-y: auto;
+  justify-content: center;
+  align-items: center;
+}
+
+.chamadoCard {
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  padding: 10px;
+  margin-right: 0px;
+  margin-bottom: 10px;
+  width: 90%;
+  border: solid 0.6px rgb(133, 133, 133);
+  border-radius: 5px;
+  color: #303030;
+  cursor: pointer;
+}
+
+.chamadoCard div {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+}
+
+.chamadoCard h2 {
+  font-size: 1.7rem;
+  font-weight: 500;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chamadoCard h5 {
+  font-size: 1.2rem;
+  margin-left: 5px;
+  padding: 0;
+  margin: 0;
+  font-weight: 400;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chamadoCard p {
+  font-size: 1rem;
+  font-weight: 300;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ------------ CHAMADO VIEW  */
+
+.chamadoView {
+  display: flex;
+  flex-direction: column;
+  width: 28%;
+  margin-left: 10px;
+}
+
+.chamadoCardView {
+  display: flex;
+  flex-direction: column;
+  border: solid 0.6px rgb(133, 133, 133);
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.editarChamado {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.chamadoCardViewIcons {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+}
+
+/* ------------------- MENSAGENS  */
+.criarMensagem {
+  display: flex;
+  flex-direction: column;
+}
+
+.mensagensContainer {
+  height: 60%;
+  overflow-y: scroll;
+}
+
+.mensagem {
+  padding: 5px;
+  border: solid 0.6px rgb(133, 133, 133);
+  border-radius: 5px;
+  color: #303030;
+  margin-bottom: 5px;
+}
+
+@media screen and (max-width: 800px) {
+  .chamados {
+    margin-left: 10px;
+  }
+  .chamadoCard h2 {
+    font-size: 1.5rem;
+  }
+
+  .chamadoCard h5 {
+    font-size: 1.1rem;
+  }
+
+  .chamadoCard p {
+    font-size: 0.9rem;
+  }
+}
+
+@media screen and (max-width: 700px) {
+  .chamados {
+    margin-left: 5px;
+  }
+  .chamadoView {
+    margin-left: 5px;
+  }
+  .chamadoCard h2 {
+    font-size: 1.3rem;
+  }
+
+  .chamadoCard h5 {
+    font-size: 1rem;
+  }
+
+  .chamadoCard p {
+    font-size: 0.8rem;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  main {
+    padding-top: 0px;
+  }
+
+  .criarChamado {
+    margin-top: 20px;
+    width: 40%;
+  }
+
+  .chamados {
+    margin-top: 20px;
+    width: 50%;
+  }
+
+  .chamadoView {
+    position: absolute;
+    z-index: 100;
+    padding-top: 10px;
+    width: 95%;
+    height: 100%;
+    background-color: #e6e6e6;
+  }
+}
