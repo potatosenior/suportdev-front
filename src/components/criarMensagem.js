@@ -2,9 +2,9 @@ import React, { useState, useRef } from "react";
 import { Form } from "@unform/web";
 import Input from "./input";
 import Button from "@material-ui/core/Button";
+import url from "../services/api";
 
 const CriarMensagem = ({ chamadoView, setChamadoView, ...rest }) => {
-  const url = "http://localhost:3000";
   const criarMensagemFormRef = useRef();
   const [mensagemError, setMensagemError] = useState(false);
 

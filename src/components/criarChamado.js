@@ -7,9 +7,9 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
+import url from "../services/api";
 
 const CriarChamado = ({ chamados, setChamados, ...rest }) => {
-  const url = "http://localhost:3000";
   const criarChamadoFormRef = useRef();
   const [status, setStatus] = useState("aberto");
   const [nameError, setNameError] = useState(false);

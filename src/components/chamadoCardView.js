@@ -12,6 +12,7 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
+import url from "../services/api";
 
 const ChamadoCardView = ({
   editarChamadoFormRef,
@@ -23,7 +24,6 @@ const ChamadoCardView = ({
   setChamadoView,
   ...rest
 }) => {
-  const url = "http://localhost:3000";
   const [nome, setNome] = useState(chamadoView.nome);
   const [cliente, setCliente] = useState(chamadoView.cliente);
   const [descricao, setDescricao] = useState(chamadoView.descricao);

@@ -5,9 +5,10 @@ import CriarChamado from "./components/criarChamado";
 import CriarMensagem from "./components/criarMensagem";
 import ChamadoCard from "./components/chamadoCard";
 import ChamadoCardView from "./components/chamadoCardView";
+import url from "./services/api";
 
 const App = () => {
-  const url = "http://localhost:3000";
+  console.log(url);
   const editarChamadoFormRef = useRef();
   const [chamados, setChamados] = useState([]);
   const [chamadoView, setChamadoView] = useState(null);
