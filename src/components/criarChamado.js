@@ -9,19 +9,36 @@ import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import url from "../services/api";
 
+/**
+ * Componente formulário para criar novos chamados
+ *
+ * @param {*} {
+ * chamados, - state com a lista de todos chamados
+ * setChamados, - função para alterar o state
+ * ...rest - outras props
+ * }
+ * @return {*} Componente Form utilizado para criar novos chamados
+ */
 const CriarChamado = ({ chamados, setChamados, ...rest }) => {
   const criarChamadoFormRef = useRef();
   const [status, setStatus] = useState("aberto");
-  const [nameError, setNameError] = useState(false);
+  const [nome, setNome] = useState("");
+  const [nomeError, setNomeError] = useState(false);
+  const [cliente, setCliente] = useState("");
   const [clienteError, setClienteError] = useState(false);
+  const [descricao, setDescricao] = useState("");
   const [descricaoError, setDescricaoError] = useState(false);
 
   const criarChamado = async data => {
+    /* 
+      Faz a requisição de criar o chamado e o adiciona
+      as variaveis de state
+    */
     try {
       let error = false;
 
       if (data.nome === "") {
-        setNameError(true);
+        setNomeError(true);
         error = true;
       }
       if (data.cliente === "") {
@@ -54,10 +71,17 @@ const CriarChamado = ({ chamados, setChamados, ...rest }) => {
             .json()
             .then(result => {
               if (!result.error) {
+                // cria uma nova lista com o chamado criado
                 var newChamados = [...chamados, result.data];
-
-                criarChamadoFormRef.current.reset();
+                // atribui essa lista ao state
                 setChamados(newChamados);
+                // reseta os campos
+                setNome("");
+                setCliente("");
+                setDescricao("");
+                setStatus("aberto");
+              } else {
+                alert(result.message);
               }
             })
             .catch(e => {
@@ -79,19 +103,31 @@ const CriarChamado = ({ chamados, setChamados, ...rest }) => {
       onSubmit={criarChamado}
     >
       <Input
-        onChange={() => setNameError(false)}
-        error={nameError}
+        value={nome}
+        onChange={e => {
+          setNome(e.target.value);
+          setNomeError(false);
+        }}
+        error={nomeError}
         helperText="Insira o seu nome"
         name="nome"
       />
       <Input
-        onChange={() => setClienteError(false)}
+        value={cliente}
+        onChange={e => {
+          setCliente(e.target.value);
+          setClienteError(false);
+        }}
         error={clienteError}
         helperText="Insira o nome do cliente"
         name="cliente"
       />
       <Input
-        onChange={() => setDescricaoError(false)}
+        value={descricao}
+        onChange={e => {
+          setDescricao(e.target.value);
+          setDescricaoError(false);
+        }}
         error={descricaoError}
         helperText="Insira uma descrição do chamado"
         multiline={true}

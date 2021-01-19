@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Form } from "@unform/web";
+import CriarMensagem from "./criarMensagem";
 import IconButton from "@material-ui/core/IconButton";
 import Input from "./input.js";
 import EditIcon from "@material-ui/icons/Edit";
@@ -14,16 +15,27 @@ import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import url from "../services/api";
 
+/**
+ * Visualização do chamado possibilitando exclusão e edição
+ *
+ * @param {*} {
+ *   chamados, - lista de chamados no state
+ *   setChamados, - funcao para alterar os chamados no state
+ *   chamadoView, - chamado sendo visualizado
+ *   setChamadoView, - funcao para alterar o chamado atual
+ *   ...rest
+ * }
+ * @return {*} Componente Form utilizado para visualizar e editar chamados
+ */
 const ChamadoCardView = ({
-  editarChamadoFormRef,
-  editando,
   chamados,
   setChamados,
-  setEditando,
   chamadoView,
   setChamadoView,
   ...rest
 }) => {
+  const editarChamadoFormRef = useRef();
+  const [editando, setEditando] = useState(false);
   const [nome, setNome] = useState(chamadoView.nome);
   const [cliente, setCliente] = useState(chamadoView.cliente);
   const [descricao, setDescricao] = useState(chamadoView.descricao);
@@ -48,7 +60,7 @@ const ChamadoCardView = ({
 
   const editarChamado = async data => {
     /* 
-      Faz a requisição de alterar algum chamado e os atualiza
+      Faz a requisição para alterar o chamado e o atualiza
       nos states
     */
     await fetch(url + "/chamados/atualizar", {
@@ -78,6 +90,8 @@ const ChamadoCardView = ({
               // altera na view
               setChamadoView(final);
               setEditando(!editando);
+            } else {
+              alert(result.message);
             }
           })
           .catch(e => {
@@ -90,6 +104,9 @@ const ChamadoCardView = ({
   };
 
   const deletarChamado = async () => {
+    /* 
+      faz a requisição de deletar o chamado
+    */
     await fetch(url + "/chamados/deletar?chamadoId=" + chamadoView.id, {
       method: "DELETE",
     }).then(response => {
@@ -103,6 +120,8 @@ const ChamadoCardView = ({
 
             setChamados(final);
             setChamadoView(null);
+          } else {
+            alert(result.message);
           }
         })
         .catch(e => {
@@ -224,6 +243,35 @@ const ChamadoCardView = ({
           )}
         </div>
       </Form>
+
+      <h3>Mensagens</h3>
+
+      <CriarMensagem
+        chamadoView={chamadoView}
+        setChamadoView={setChamadoView}
+      />
+
+      <div className="mensagensContainer">
+        {chamadoView.msg.map(msg => {
+          let date = new Date(msg.createdAt);
+
+          return (
+            <div key={msg.id} className="mensagem">
+              <p>{msg.conteudo}</p>
+
+              <span>
+                {date.getHours() +
+                  ":" +
+                  date.getMinutes() +
+                  " " +
+                  date.getDate() +
+                  "/" +
+                  parseInt(date.getMonth() + 1)}
+              </span>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };

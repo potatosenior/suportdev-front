@@ -109,6 +109,7 @@ main {
 
 .chamadoCardView {
   display: flex;
+  max-height: 100%;
   flex-direction: column;
   border: solid 0.6px rgb(133, 133, 133);
   border-radius: 5px;
@@ -134,16 +135,28 @@ main {
 }
 
 .mensagensContainer {
-  height: 60%;
   overflow-y: scroll;
 }
 
 .mensagem {
-  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
   border: solid 0.6px rgb(133, 133, 133);
   border-radius: 5px;
   color: #303030;
-  margin-bottom: 5px;
+  margin-bottom: 3px;
+}
+
+.mensagem p,
+.mensagem span {
+  margin: 3px;
+}
+
+.mensagem span {
+  align-self: flex-end;
+  font-weight: 200;
+  font-size: 0.8rem;
 }
 
 @media screen and (max-width: 800px) {
@@ -202,8 +215,14 @@ main {
     position: absolute;
     z-index: 100;
     padding-top: 10px;
-    width: 95%;
-    height: 100%;
+    margin-left: 0px;
+    width: 98%;
+    min-height: 100%;
+    max-height: 100%;
     background-color: #e6e6e6;
+  }
+
+  .mensagensContainer {
+    height: 100%;
   }
 }

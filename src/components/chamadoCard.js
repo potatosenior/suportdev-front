@@ -1,6 +1,20 @@
 import React from "react";
 import ArrowRightAltIcon from "@material-ui/icons/ArrowRightAlt";
 
+/**
+ * Card com informações de cada chamado
+ *
+ * @param {*} {
+ *   onClick, - função para ser chamada ao clicar no card
+ *   id, - id do chamado
+ *   nome,
+ *   cliente,
+ *   descricao,
+ *   status,
+ *   ...rest - outras props
+ * }
+ * @return {*} Componente div utilizado para listar e selecionar os chamados
+ */
 const ChamadoCard = ({
   onClick,
   id,
