@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Form } from "@unform/web";
-import CriarMensagem from "./criarMensagem";
+import CreateMessage from "./createMessage";
 import IconButton from "@material-ui/core/IconButton";
 import Input from "./input.js";
 import EditIcon from "@material-ui/icons/Edit";
@@ -15,55 +15,31 @@ import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import url from "../services/api";
 
-/**
- * Visualização do chamado possibilitando exclusão e edição
- *
- * @param {*} {
- *   chamados, - lista de chamados no state
- *   setChamados, - funcao para alterar os chamados no state
- *   chamadoView, - chamado sendo visualizado
- *   setChamadoView, - funcao para alterar o chamado atual
- *   ...rest
- * }
- * @return {*} Componente Form utilizado para visualizar e editar chamados
- */
-const ChamadoCardView = ({
-  chamados,
-  setChamados,
-  chamadoView,
-  setChamadoView,
-  ...rest
-}) => {
-  const editarChamadoFormRef = useRef();
+const CallCardView = ({ calls, setCalls, callView, setCallView, ...rest }) => {
+  const editCallFormRef = useRef();
   const [editando, setEditando] = useState(false);
-  const [nome, setNome] = useState(chamadoView.nome);
-  const [cliente, setCliente] = useState(chamadoView.cliente);
-  const [descricao, setDescricao] = useState(chamadoView.descricao);
-  const [status, setStatus] = useState(chamadoView.status);
+  const [name, setName] = useState(callView.name);
+  const [client, setClient] = useState(callView.client);
+  const [description, setDescription] = useState(callView.description);
+  const [status, setStatus] = useState(callView.status);
 
-  const resetarCampos = () => {
-    // reseta os valores e cancela a edicao
-    setNome(chamadoView.nome);
-    setCliente(chamadoView.cliente);
-    setDescricao(chamadoView.descricao);
-    setStatus(chamadoView.status);
+  const resetFields = () => {
+    setName(callView.name);
+    setClient(callView.client);
+    setDescription(callView.description);
+    setStatus(callView.status);
     setEditando(!editando);
   };
 
   useEffect(() => {
-    // atribui os valores a cada renderizaçao
-    setNome(chamadoView.nome);
-    setCliente(chamadoView.cliente);
-    setDescricao(chamadoView.descricao);
-    setStatus(chamadoView.status);
-  }, [chamadoView]);
+    setName(callView.name);
+    setClient(callView.client);
+    setDescription(callView.description);
+    setStatus(callView.status);
+  }, [callView]);
 
-  const editarChamado = async data => {
-    /* 
-      Faz a requisição para alterar o chamado e o atualiza
-      nos states
-    */
-    await fetch(url + "/chamados/atualizar", {
+  const editCall = async data => {
+    await fetch(url + "/calls/atualizar", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -71,7 +47,7 @@ const ChamadoCardView = ({
       body: JSON.stringify({
         ...data,
         status: status,
-        chamadoId: chamadoView.id,
+        callId: callView.id,
       }),
     })
       .then(async response => {
@@ -79,16 +55,15 @@ const ChamadoCardView = ({
           .json()
           .then(async result => {
             if (!result.error) {
-              // junta o objeto resultado com o atual
-              const final = { ...chamadoView, ...result.data };
-              // procura o chamado atual na lista de chamados e pega seu index
-              let idx = chamados.findIndex(elem => elem.id === chamadoView.id);
-              let chamadosCopia = [...chamados];
-              // altera o chamado na lista
-              chamadosCopia[idx] = final;
-              setChamados(chamadosCopia);
-              // altera na view
-              setChamadoView(final);
+              const final = { ...callView, ...result.data };
+
+              let idx = calls.findIndex(elem => elem.id === callView.id);
+              let callsCopia = [...calls];
+
+              callsCopia[idx] = final;
+
+              setCalls(callsCopia);
+              setCallView(final);
               setEditando(!editando);
             } else {
               alert(result.message);
@@ -103,23 +78,19 @@ const ChamadoCardView = ({
       });
   };
 
-  const deletarChamado = async () => {
-    /* 
-      faz a requisição de deletar o chamado
-    */
-    await fetch(url + "/chamados/deletar?chamadoId=" + chamadoView.id, {
+  const deleteCall = async () => {
+    await fetch(url + "/calls/deletar?callId=" + callView.id, {
       method: "DELETE",
     }).then(response => {
       response
         .json()
         .then(result => {
           if (!result.error) {
-            var final = [...chamados];
-            // remove o chamado da lista
-            final = final.filter(item => item.id !== chamadoView.id);
+            var final = [...calls];
+            final = final.filter(item => item.id !== callView.id);
 
-            setChamados(final);
-            setChamadoView(null);
+            setCalls(final);
+            setCallView(null);
           } else {
             alert(result.message);
           }
@@ -131,36 +102,32 @@ const ChamadoCardView = ({
   };
 
   return (
-    <div {...rest} className="chamadoCardView">
-      <Form
-        className="editarChamado"
-        ref={editarChamadoFormRef}
-        onSubmit={editarChamado}
-      >
+    <div {...rest} className="callCardView">
+      <Form className="editCall" ref={editCallFormRef} onSubmit={editCall}>
         <Input
           disabled={!editando}
-          value={nome}
-          onChange={e => setNome(e.target.value)}
-          name="nome"
+          value={name}
+          onChange={e => setName(e.target.value)}
+          name="name"
           required
           size="small"
         />
 
         <Input
-          value={cliente}
-          onChange={e => setCliente(e.target.value)}
-          name="cliente"
+          value={client}
+          onChange={e => setClient(e.target.value)}
+          name="client"
           disabled={!editando}
           size="small"
           required
         />
 
         <Input
-          value={descricao}
-          onChange={e => setDescricao(e.target.value)}
+          value={description}
+          onChange={e => setDescription(e.target.value)}
           multiline={true}
           rows={4}
-          name="descricao"
+          name="description"
           disabled={!editando}
           size="small"
           required
@@ -177,15 +144,15 @@ const ChamadoCardView = ({
             }}
           >
             <FormControlLabel
-              checked={status === "aberto"}
-              value="aberto"
+              checked={status === "open"}
+              value="open"
               control={<Radio />}
               label="Aberto"
               disabled={!editando}
             />
             <FormControlLabel
-              checked={status === "fechado"}
-              value="fechado"
+              checked={status === "closed"}
+              value="closed"
               control={<Radio />}
               label="Fechado"
               disabled={!editando}
@@ -193,14 +160,14 @@ const ChamadoCardView = ({
           </RadioGroup>
         </FormControl>
 
-        <div className="chamadoCardViewIcons">
+        <div className="callCardViewIcons">
           <IconButton
             variant="contained"
             color="primary"
             style={{ marginRight: "auto" }}
             onClick={() => {
               setEditando(false);
-              setChamadoView(null);
+              setCallView(null);
             }}
           >
             <CancelPresentationIcon />
@@ -213,7 +180,7 @@ const ChamadoCardView = ({
               </IconButton>
 
               <IconButton
-                onClick={resetarCampos}
+                onClick={resetFields}
                 variant="contained"
                 color="primary"
               >
@@ -233,7 +200,7 @@ const ChamadoCardView = ({
               </IconButton>
 
               <IconButton
-                onClick={() => deletarChamado()}
+                onClick={() => deleteCall()}
                 variant="contained"
                 color="primary"
               >
@@ -244,20 +211,17 @@ const ChamadoCardView = ({
         </div>
       </Form>
 
-      <h3>Mensagens</h3>
+      <h3>Messages</h3>
 
-      <CriarMensagem
-        chamadoView={chamadoView}
-        setChamadoView={setChamadoView}
-      />
+      <CreateMessage callView={callView} setCallView={setCallView} />
 
-      <div className="mensagensContainer">
-        {chamadoView.msg.map(msg => {
+      <div className="messagesContainer">
+        {callView.msg.map(msg => {
           let date = new Date(msg.createdAt);
 
           return (
-            <div key={msg.id} className="mensagem">
-              <p>{msg.conteudo}</p>
+            <div key={msg.id} className="message">
+              <p>{msg.content}</p>
 
               <span>
                 {date.getHours() +
@@ -276,4 +240,4 @@ const ChamadoCardView = ({
   );
 };
 
-export default ChamadoCardView;
+export default CallCardView;
