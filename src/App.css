@@ -30,7 +30,7 @@ main {
   padding-top: 20px;
 }
 
-.criarChamado {
+.createCall {
   display: flex;
   flex-direction: column;
   width: 26%;
@@ -40,9 +40,7 @@ main {
   padding: 10px;
 }
 
-/* --------------- CHAMADOS LISTA  */
-
-.chamados {
+.calls {
   margin-left: 20px;
   width: 33%;
   height: 90vh;
@@ -51,7 +49,7 @@ main {
   align-items: center;
 }
 
-.chamadoCard {
+.callCard {
   display: flex;
   flex-direction: column;
   align-self: center;
@@ -65,13 +63,13 @@ main {
   cursor: pointer;
 }
 
-.chamadoCard div {
+.callCard div {
   display: flex;
   flex-direction: row;
   align-items: flex-end;
 }
 
-.chamadoCard h2 {
+.callCard h2 {
   font-size: 1.7rem;
   font-weight: 500;
   margin: 0;
@@ -79,7 +77,7 @@ main {
   text-overflow: ellipsis;
 }
 
-.chamadoCard h5 {
+.callCard h5 {
   font-size: 1.2rem;
   margin-left: 5px;
   padding: 0;
@@ -89,7 +87,7 @@ main {
   text-overflow: ellipsis;
 }
 
-.chamadoCard p {
+.callCard p {
   font-size: 1rem;
   font-weight: 300;
   padding: 0;
@@ -98,16 +96,14 @@ main {
   text-overflow: ellipsis;
 }
 
-/* ------------ CHAMADO VIEW  */
-
-.chamadoView {
+.callView {
   display: flex;
   flex-direction: column;
   width: 28%;
   margin-left: 10px;
 }
 
-.chamadoCardView {
+.callCardView {
   display: flex;
   max-height: 100%;
   flex-direction: column;
@@ -116,29 +112,28 @@ main {
   padding: 10px;
 }
 
-.editarChamado {
+.editCall {
   display: flex;
   flex-direction: column;
   width: 100%;
 }
 
-.chamadoCardViewIcons {
+.callCardViewIcons {
   display: flex;
   flex-direction: row;
   align-items: flex-end;
 }
 
-/* ------------------- MENSAGENS  */
-.criarMensagem {
+.createMessage {
   display: flex;
   flex-direction: column;
 }
 
-.mensagensContainer {
+.messagesContainer {
   overflow-y: scroll;
 }
 
-.mensagem {
+.message {
   display: flex;
   flex-direction: column;
   margin: 0;
@@ -148,50 +143,50 @@ main {
   margin-bottom: 3px;
 }
 
-.mensagem p,
-.mensagem span {
+.message p,
+.message span {
   margin: 3px;
 }
 
-.mensagem span {
+.message span {
   align-self: flex-end;
   font-weight: 200;
   font-size: 0.8rem;
 }
 
 @media screen and (max-width: 800px) {
-  .chamados {
+  .calls {
     margin-left: 10px;
   }
-  .chamadoCard h2 {
+  .callCard h2 {
     font-size: 1.5rem;
   }
 
-  .chamadoCard h5 {
+  .callCard h5 {
     font-size: 1.1rem;
   }
 
-  .chamadoCard p {
+  .callCard p {
     font-size: 0.9rem;
   }
 }
 
 @media screen and (max-width: 700px) {
-  .chamados {
+  .calls {
     margin-left: 5px;
   }
-  .chamadoView {
+  .callView {
     margin-left: 5px;
   }
-  .chamadoCard h2 {
+  .callCard h2 {
     font-size: 1.3rem;
   }
 
-  .chamadoCard h5 {
+  .callCard h5 {
     font-size: 1rem;
   }
 
-  .chamadoCard p {
+  .callCard p {
     font-size: 0.8rem;
   }
 }
@@ -201,17 +196,17 @@ main {
     padding-top: 0px;
   }
 
-  .criarChamado {
+  .createCall {
     margin-top: 20px;
     width: 40%;
   }
 
-  .chamados {
+  .calls {
     margin-top: 20px;
     width: 50%;
   }
 
-  .chamadoView {
+  .callView {
     position: absolute;
     z-index: 100;
     padding-top: 10px;
@@ -222,7 +217,7 @@ main {
     background-color: #e6e6e6;
   }
 
-  .mensagensContainer {
+  .messagesContainer {
     height: 100%;
   }
 }
