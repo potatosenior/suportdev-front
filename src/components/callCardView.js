@@ -39,7 +39,7 @@ const CallCardView = ({ calls, setCalls, callView, setCallView, ...rest }) => {
   }, [callView]);
 
   const editCall = async data => {
-    await fetch(url + "/calls/atualizar", {
+    await fetch(url + "/calls/update", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
