@@ -1,0 +1,9 @@
+.createCall {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  border: solid 0.6px rgb(133, 133, 133);
+  border-radius: 5px;
+  padding: 10px;
+}
