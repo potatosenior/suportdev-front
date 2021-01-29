@@ -1,0 +1,41 @@
+.view-form {
+  /* width: 600px; */
+  padding: 10px;
+  height: 450px;
+}
+
+.view-form > div {
+  margin: 0px 20px;
+}
+
+.callCardViewIcons {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+}
+
+.messagesContainer {
+  overflow-y: scroll;
+  max-height: 60%;
+}
+
+.message {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  border: solid 0.6px rgb(133, 133, 133);
+  border-radius: 5px;
+  color: #303030;
+  margin-bottom: 3px;
+}
+
+.message p,
+.message span {
+  margin: 3px;
+}
+
+.message span {
+  align-self: flex-end;
+  font-weight: 200;
+  font-size: 0.8rem;
+}
