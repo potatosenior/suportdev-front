@@ -22,8 +22,8 @@ const CreateClient = () => {
   const [emailError, setEmailError] = useState(false);
   const [phone, setPhone] = useState("");
   const [phoneError, setPhoneError] = useState(false);
-  const [adress, setAdress] = useState("");
-  const [adressError, setAdressError] = useState(false);
+  const [address, setAddress] = useState("");
+  const [addressError, setAddressError] = useState(false);
   const [birthday, setBirthday] = useState(dateParsed);
   const [birthdayError, setBirthdayError] = useState(false);
 
@@ -48,8 +48,8 @@ const CreateClient = () => {
         setPhoneError(true);
         error = true;
       }
-      if (data.adress === "") {
-        setAdressError(true);
+      if (data.address === "") {
+        setAddressError(true);
         error = true;
       }
       if (data.date_of_birth === "") {
@@ -58,7 +58,7 @@ const CreateClient = () => {
       }
 
       if (error) return;
-      console.log(data.phone_number.replace(/\D/g, ""));
+
       await fetch(url + "/clients/create", {
         method: "POST",
         headers: {
@@ -79,7 +79,7 @@ const CreateClient = () => {
                 setCpf("");
                 setEmail("");
                 setPhone("");
-                setAdress("");
+                setAddress("");
                 setBirthday(dateParsed);
               }
               console.log(result);
@@ -175,14 +175,14 @@ const CreateClient = () => {
           />
 
           <Input
-            value={adress}
+            value={address}
             onChange={e => {
-              setAdress(e.target.value);
-              setAdressError(false);
+              setAddress(e.target.value);
+              setAddressError(false);
             }}
-            error={adressError}
+            error={addressError}
             helperText="Insira o endereço do cliente"
-            name="adress"
+            name="address"
             label="Endereço"
             autoComplete="street-address"
           />
