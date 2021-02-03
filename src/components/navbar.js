@@ -9,6 +9,7 @@ const NavbarComponent = () => (
       <Nav.Link href="/calls/create">Criar chamados</Nav.Link>
       <Nav.Link href="/calls/index">Chamados</Nav.Link>
       <Nav.Link href="/clients/create">Cadastrar clientes</Nav.Link>
+      <Nav.Link href="/clients/index">Clientes</Nav.Link>
     </Nav>
   </Navbar>
 );
