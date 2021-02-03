@@ -83,6 +83,10 @@ main {
   justify-content: space-around;
 }
 
+.jf-end {
+  justify-content: flex-end;
+}
+
 .al-center {
   align-items: center;
 }

@@ -4,113 +4,79 @@ import Button from "@material-ui/core/Button";
 import Input from "../components/input";
 import url from "../services/api";
 import Navbar from "../components/navbar";
+import clientValidator from "../utils/validators/client";
+import cpfMask from "../utils/masks/cpf";
+import phoneMask from "../utils/masks/phone";
 import "../css/createCall.css";
-import validateCPF from "../utils/validators/cpf";
 
 const CreateClient = () => {
   const date = new Date();
   // YYYY-MM-DD
-  var dateParsed = `${date.getFullYear()}-${
+  var initialDate = `${date.getFullYear()}-${
     date.getMonth() + 1 < 10 ? "0" : ""
-  }${date.getMonth() + 1}-${date.getDate()}`;
+  }${date.getMonth()}-${date.getDate() + 1 < 10 ? "0" : ""}${date.getDate()}`;
+
   const createClientFormRef = useRef();
   const [name, setName] = useState("");
-  const [nameError, setNameError] = useState(false);
   const [cpf, setCpf] = useState("");
-  const [cpfError, setCpfError] = useState(false);
   const [email, setEmail] = useState("");
-  const [emailError, setEmailError] = useState(false);
   const [phone, setPhone] = useState("");
-  const [phoneError, setPhoneError] = useState(false);
   const [address, setAddress] = useState("");
-  const [addressError, setAddressError] = useState(false);
-  const [birthday, setBirthday] = useState(dateParsed);
-  const [birthdayError, setBirthdayError] = useState(false);
+  const [birthday, setBirthday] = useState(initialDate);
+  const [errors, setErrors] = useState({});
 
   const createClientHandler = async data => {
     try {
       const rawCpf = data.cpf.replace(/\D/g, "");
-      let error = false;
+      const rawNumber = data.phone_number.replace(/\D/g, "");
+      let newErrors = { ...errors };
 
-      if (data.name === "") {
-        setNameError(true);
-        error = true;
-      }
-      if (data.cpf === "" || !validateCPF(rawCpf)) {
-        setCpfError(true);
-        error = true;
-      }
-      if (data.email === "") {
-        setEmailError(true);
-        error = true;
-      }
-      if (data.phone_number === "") {
-        setPhoneError(true);
-        error = true;
-      }
-      if (data.address === "") {
-        setAddressError(true);
-        error = true;
-      }
-      if (data.date_of_birth === "") {
-        setBirthdayError(true);
-        error = true;
-      }
-
-      if (error) return;
-
-      await fetch(url + "/clients/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...data,
-          cpf: rawCpf,
-          phone_number: data.phone_number.replace(/\D/g, ""),
-        }),
-      })
-        .then(response => {
-          response
-            .json()
-            .then(result => {
-              if (!result.error) {
-                setName("");
-                setCpf("");
-                setEmail("");
-                setPhone("");
-                setAddress("");
-                setBirthday(dateParsed);
-              }
-              console.log(result);
-              alert(result.message);
+      return await clientValidator
+        .validate(
+          { ...data, cpf: rawCpf, phone_number: rawNumber },
+          { abortEarly: false }
+        )
+        .then(async result => {
+          await fetch(url + "/clients/create", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(result),
+          })
+            .then(response => {
+              response
+                .json()
+                .then(result => {
+                  if (!result.error) {
+                    setName("");
+                    setCpf("");
+                    setEmail("");
+                    setPhone("");
+                    setAddress("");
+                    setBirthday(initialDate);
+                    alert(result.message);
+                  }
+                })
+                .catch(error => {
+                  throw error;
+                });
             })
-            .catch(e => {
-              console.log("error: ", e);
+            .catch(error => {
+              throw error;
             });
         })
-        .catch(e => {
-          console.log("error: ", e);
+        .catch(error => {
+          if (error.inner) {
+            error.inner.forEach(err => {
+              newErrors[err.path] = err.message;
+            });
+            setErrors(newErrors);
+          }
         });
     } catch (error) {
-      console.log("error: ", error);
+      console.error(error);
     }
-  };
-
-  const cpfMask = value => {
-    return value
-      .replace(/\D/g, "")
-      .replace(/(\d{3})(\d)/, "$1.$2")
-      .replace(/(\d{3})(\d)/, "$1.$2")
-      .replace(/(\d{3})(\d{1,2})/, "$1-$2")
-      .replace(/(-\d{2})\d+?$/, "$1");
-  };
-
-  const phoneMask = value => {
-    return value
-      .replace(/\D/g, "")
-      .replace(/^(\d{2})(\d)/g, "($1) $2")
-      .replace(/(\d)(\d{4})$/, "$1-$2");
   };
 
   return (
@@ -127,10 +93,10 @@ const CreateClient = () => {
             value={name}
             onChange={e => {
               setName(e.target.value);
-              setNameError(false);
+              setErrors({ ...errors, name: false });
             }}
-            error={nameError}
-            helperText="Insira o nome do cliente"
+            error={!!errors["name"]}
+            helperText={errors["name"]}
             name="name"
             label="Nome"
             autoComplete="name"
@@ -140,10 +106,10 @@ const CreateClient = () => {
             value={cpf}
             onChange={e => {
               setCpf(cpfMask(e.target.value));
-              setCpfError(false);
+              setErrors({ ...errors, cpf: false });
             }}
-            error={cpfError}
-            helperText="Insira o cpf do cliente"
+            error={!!errors["cpf"]}
+            helperText={errors["cpf"]}
             name="cpf"
             label="Cpf"
           />
@@ -152,10 +118,10 @@ const CreateClient = () => {
             value={email}
             onChange={e => {
               setEmail(e.target.value);
-              setEmailError(false);
+              setErrors({ ...errors, email: false });
             }}
-            error={emailError}
-            helperText="Insira o email do cliente"
+            error={!!errors["email"]}
+            helperText={errors["email"]}
             name="email"
             label="Email"
             autoComplete="email"
@@ -165,23 +131,24 @@ const CreateClient = () => {
             value={phone}
             onChange={e => {
               setPhone(phoneMask(e.target.value));
-              setPhoneError(false);
+              setErrors({ ...errors, phone_number: false });
             }}
-            error={phoneError}
-            helperText="Insira o numero do cliente"
+            error={!!errors["phone_number"]}
+            helperText={errors["phone_number"]}
             name="phone_number"
             label="Numero de celular"
             autoComplete="tel-national"
+            inputProps={{ maxLength: 15 }}
           />
 
           <Input
             value={address}
             onChange={e => {
               setAddress(e.target.value);
-              setAddressError(false);
+              setErrors({ ...errors, address: false });
             }}
-            error={addressError}
-            helperText="Insira o endereço do cliente"
+            error={!!errors["address"]}
+            helperText={errors["address"]}
             name="address"
             label="Endereço"
             autoComplete="street-address"
@@ -191,10 +158,10 @@ const CreateClient = () => {
             value={birthday}
             onChange={e => {
               setBirthday(e.target.value);
-              setBirthdayError(false);
+              setErrors({ ...errors, date_of_birth: false });
             }}
-            error={birthdayError}
-            helperText="Data de nascimento do cliente"
+            error={!!errors["date_of_birth"]}
+            helperText={errors["date_of_birth"]}
             type="date"
             name="date_of_birth"
             label="Data de nascimento"

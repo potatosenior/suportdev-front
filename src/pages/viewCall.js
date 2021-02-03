@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Form } from "@unform/web";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import Input from "../components/input.js";
 import IconButton from "@material-ui/core/IconButton";
@@ -16,12 +16,11 @@ import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import url from "../services/api";
 import Navbar from "../components/navbar";
-import { useParams } from "react-router-dom";
 import "../css/viewCall.css";
 
 const ViewCall = () => {
   const [call, setCall] = useState(null);
-  const [editando, setEditando] = useState(false);
+  const [editing, setEditing] = useState(false);
   const [name, setName] = useState("");
   const [cpf, setCpf] = useState("");
   const [description, setDescription] = useState("");
@@ -88,7 +87,7 @@ const ViewCall = () => {
     setCpf(call.cpf);
     setDescription(call.description);
     setStatus(call.status);
-    setEditando(!editando);
+    setEditing(!editing);
   };
 
   const updateCallStates = newCall => {
@@ -117,7 +116,7 @@ const ViewCall = () => {
           .then(async result => {
             if (!result.error) {
               setCall({ ...call, ...result.data });
-              setEditando(!editando);
+              setEditing(!editing);
             } else {
               alert(result.message);
             }
@@ -199,7 +198,7 @@ const ViewCall = () => {
                 onSubmit={editCall}
               >
                 <Input
-                  disabled={!editando}
+                  disabled={!editing}
                   value={name}
                   onChange={e => setName(e.target.value)}
                   name="name"
@@ -211,7 +210,7 @@ const ViewCall = () => {
                   value={cpf}
                   onChange={e => setCpf(e.target.value)}
                   name="cpf"
-                  disabled={!editando}
+                  disabled={!editing}
                   label="Cpf do cliente"
                   required
                 />
@@ -222,7 +221,7 @@ const ViewCall = () => {
                   multiline={true}
                   rows={4}
                   name="description"
-                  disabled={!editando}
+                  disabled={!editing}
                   required
                   label="Descrição do chamado"
                 />
@@ -242,14 +241,14 @@ const ViewCall = () => {
                       value="open"
                       control={<Radio />}
                       label="Aberto"
-                      disabled={!editando}
+                      disabled={!editing}
                     />
                     <FormControlLabel
                       checked={status === "closed"}
                       value="closed"
                       control={<Radio />}
                       label="Fechado"
-                      disabled={!editando}
+                      disabled={!editing}
                     />
                   </RadioGroup>
                 </FormControl>
@@ -260,7 +259,7 @@ const ViewCall = () => {
                       variant="contained"
                       color="secondary"
                       onClick={() => {
-                        setEditando(false);
+                        setEditing(false);
                         setCall(null);
                       }}
                     >
@@ -268,7 +267,7 @@ const ViewCall = () => {
                     </IconButton>
                   </Link>
 
-                  {editando ? (
+                  {editing ? (
                     <>
                       <IconButton
                         variant="contained"
@@ -293,7 +292,7 @@ const ViewCall = () => {
                       <IconButton
                         variant="contained"
                         color="primary"
-                        onClick={() => setEditando(!editando)}
+                        onClick={() => setEditing(!editing)}
                       >
                         <EditIcon />
                       </IconButton>

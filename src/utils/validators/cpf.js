@@ -1,4 +1,4 @@
-function validateCPF(cpf) {
+export default function validateCPF(cpf) {
   var sum;
   var rest;
   sum = 0;
@@ -21,5 +21,3 @@ function validateCPF(cpf) {
   if (rest !== parseInt(cpf.substring(10, 11))) return false;
   return true;
 }
-
-export default validateCPF;
