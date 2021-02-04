@@ -165,6 +165,7 @@ const CreateClient = () => {
             type="date"
             name="date_of_birth"
             label="Data de nascimento"
+            inputProps={{ min: "1900-01-01" }}
           />
 
           <Button variant="contained" color="primary" type="submit">
