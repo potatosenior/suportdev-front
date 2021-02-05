@@ -23,7 +23,7 @@ const schema = yup.object().shape({
     .required()
     .email("Email deve ser válido!")
     .label("Email"),
-  phone_number: yup
+  phone: yup
     .string()
     .required()
     .label("Celular")
@@ -33,7 +33,7 @@ const schema = yup.object().shape({
     .max(11, "Número inválido!")
     .min(10, "Número inválido!"),
   address: yup.string().required().label("Endereço"),
-  date_of_birth: yup
+  birthday: yup
     .string()
     .required()
     .label("Data de nascimento")

@@ -28,12 +28,12 @@ const CreateClient = () => {
   const createClientHandler = async data => {
     try {
       const rawCpf = data.cpf.replace(/\D/g, "");
-      const rawNumber = data.phone_number.replace(/\D/g, "");
+      const rawNumber = data.phone.replace(/\D/g, "");
       let newErrors = { ...errors };
 
       return await clientValidator
         .validate(
-          { ...data, cpf: rawCpf, phone_number: rawNumber },
+          { ...data, cpf: rawCpf, phone: rawNumber },
           { abortEarly: false }
         )
         .then(async result => {
@@ -48,7 +48,7 @@ const CreateClient = () => {
               response
                 .json()
                 .then(result => {
-                  if (!result.error) {
+                  if (response.status === 201) {
                     setName("");
                     setCpf("");
                     setEmail("");
@@ -56,6 +56,12 @@ const CreateClient = () => {
                     setAddress("");
                     setBirthday(initialDate);
                     alert(result.message);
+                  }
+                  console.log(response.status);
+                  console.log(result);
+                  if (response.status === 400) {
+                    if (result.path) newErrors[result.path] = result.message;
+                    setErrors(newErrors);
                   }
                 })
                 .catch(error => {
@@ -131,11 +137,11 @@ const CreateClient = () => {
             value={phone}
             onChange={e => {
               setPhone(phoneMask(e.target.value));
-              setErrors({ ...errors, phone_number: false });
+              setErrors({ ...errors, phone: false });
             }}
-            error={!!errors["phone_number"]}
-            helperText={errors["phone_number"]}
-            name="phone_number"
+            error={!!errors["phone"]}
+            helperText={errors["phone"]}
+            name="phone"
             label="Numero de celular"
             autoComplete="tel-national"
             inputProps={{ maxLength: 15 }}
@@ -158,12 +164,12 @@ const CreateClient = () => {
             value={birthday}
             onChange={e => {
               setBirthday(e.target.value);
-              setErrors({ ...errors, date_of_birth: false });
+              setErrors({ ...errors, birthday: false });
             }}
-            error={!!errors["date_of_birth"]}
-            helperText={errors["date_of_birth"]}
+            error={!!errors["birthday"]}
+            helperText={errors["birthday"]}
             type="date"
-            name="date_of_birth"
+            name="birthday"
             label="Data de nascimento"
             inputProps={{ min: "1900-01-01" }}
           />

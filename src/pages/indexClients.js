@@ -29,14 +29,14 @@ const columns = [
     // width: 150,
   },
   {
-    field: "phone_number",
+    field: "phone",
     headerName: "Número",
     // width: 150,
     flex: 1,
     valueFormatter: ({ value }) => phoneMask(value),
   },
   {
-    field: "date_of_birth",
+    field: "birthday",
     headerName: "Data de Nascimento",
     type: "date",
     flex: 1,

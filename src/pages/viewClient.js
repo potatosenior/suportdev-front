@@ -23,7 +23,7 @@ const ViewClient = () => {
   const { id } = useParams();
 
   useEffect(() => {
-    fetch(url + "/clients/index/" + id, {
+    fetch(url + "/clients/get/" + id, {
       method: "GET",
     }).then(async response => {
       await response.json().then(result => {
@@ -38,7 +38,7 @@ const ViewClient = () => {
     const parsedData = {
       ...data,
       cpf: cpfMask(data.cpf),
-      phone_number: phoneMask(data.phone_number),
+      phone: phoneMask(data.phone),
     };
 
     setClient(parsedData);
@@ -48,12 +48,12 @@ const ViewClient = () => {
   const updateClientHandler = async () => {
     try {
       const rawCpf = clientEditing.cpf.replace(/\D/g, "");
-      const rawNumber = clientEditing.phone_number.replace(/\D/g, "");
+      const rawNumber = clientEditing.phone.replace(/\D/g, "");
       let newErrors = { ...errors };
 
       return await clientValidator
         .validate(
-          { ...clientEditing, cpf: rawCpf, phone_number: rawNumber },
+          { ...clientEditing, cpf: rawCpf, phone: rawNumber },
           { abortEarly: false }
         )
         .then(async result => {
@@ -151,17 +151,17 @@ const ViewClient = () => {
             />
 
             <Input
-              value={clientEditing ? clientEditing.phone_number : ""}
+              value={clientEditing ? clientEditing.phone : ""}
               onChange={e => {
                 setClientEditing({
                   ...clientEditing,
-                  phone_number: phoneMask(e.target.value),
+                  phone: phoneMask(e.target.value),
                 });
-                setErrors({ ...errors, phone_number: false });
+                setErrors({ ...errors, phone: false });
               }}
-              error={!!errors["phone_number"]}
-              helperText={errors["phone_number"]}
-              name="phone_number"
+              error={!!errors["phone"]}
+              helperText={errors["phone"]}
+              name="phone"
               label="Numero de celular"
               autoComplete="tel-national"
               inputProps={{ maxLength: 15 }}
@@ -183,18 +183,18 @@ const ViewClient = () => {
             />
 
             <Input
-              value={clientEditing ? clientEditing.date_of_birth : ""}
+              value={clientEditing ? clientEditing.birthday : ""}
               onChange={e => {
                 setClientEditing({
                   ...clientEditing,
-                  date_of_birth: e.target.value,
+                  birthday: e.target.value,
                 });
-                setErrors({ ...errors, date_of_birth: false });
+                setErrors({ ...errors, birthday: false });
               }}
-              error={!!errors["date_of_birth"]}
-              helperText={errors["date_of_birth"]}
+              error={!!errors["birthday"]}
+              helperText={errors["birthday"]}
               type="date"
-              name="date_of_birth"
+              name="birthday"
               label="Data de nascimento"
               disabled={!editing}
               inputProps={{ min: "1900-01-01" }}
@@ -241,10 +241,6 @@ const ViewClient = () => {
                 </>
               )}
             </div>
-
-            {/*           <Button variant="contained" color="primary" type="submit">
-            Cadastrar novo cliente
-          </Button> */}
           </Form>
         ) : (
           <div>
