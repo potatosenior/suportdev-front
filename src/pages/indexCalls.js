@@ -12,17 +12,20 @@ const IndexCalls = () => {
       method: "GET",
     }).then(async response => {
       await response.json().then(rawCalls => {
-        let parsedCalls = [];
+        if (!rawCalls.error) {
+          let parsedCalls = [];
+          console.log(rawCalls);
 
-        rawCalls.forEach(async (call, idx) => {
-          let client = await fetch(url + "/clients/index/" + call.client_id, {
-            method: "GET",
-          }).then(async response => await response.json());
+          rawCalls.forEach(async (call, idx) => {
+            let client = await fetch(url + "/clients/get/" + call.clientId, {
+              method: "GET",
+            }).then(async response => await response.json());
 
-          parsedCalls.push({ ...call, client });
+            parsedCalls.push({ ...call, client });
 
-          if (idx === rawCalls.length - 1) setCalls(parsedCalls);
-        });
+            if (idx === rawCalls.length - 1) setCalls(parsedCalls);
+          });
+        }
       });
     });
   }, []);
