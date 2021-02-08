@@ -33,13 +33,13 @@ const ViewCall = () => {
   const { id } = useParams();
 
   useEffect(() => {
-    fetch(url + "/calls/index/" + id, {
+    fetch(url + "/calls/get/" + id, {
       method: "GET",
     })
       .then(async response => {
         await response.json().then(async result => {
           if (!result.error) {
-            await fetch(url + "/clients/index/" + result.client_id, {
+            await fetch(url + "/clients/get/" + result.data.clientId, {
               method: "GET",
             })
               .then(result2 => {
@@ -47,7 +47,10 @@ const ViewCall = () => {
                   result2
                     .json()
                     .then(client => {
-                      updateCallStates({ ...result, cpf: client.cpf });
+                      updateCallStates({
+                        ...result.data,
+                        cpf: client.data.cpf,
+                      });
                     })
                     .catch(error => console.error(error));
                 else alert(result.message);
@@ -63,18 +66,23 @@ const ViewCall = () => {
       });
 
     getMessages(id).then(result => {
-      if (result) setMessages(result);
+      if (!result.error) setMessages(result);
     });
   }, [id]);
 
   const getMessages = async id => {
-    return await fetch(url + "/calls/messages/index?callId=" + id, {
+    return await fetch(url + "/calls/messages/index/" + id, {
       method: "GET",
     })
       .then(async response => {
-        return await response.json().then(result => {
-          return result;
-        });
+        return await response
+          .json()
+          .then(result => {
+            return result;
+          })
+          .catch(error => {
+            throw error;
+          });
       })
       .catch(e => {
         console.error("error: ", e);
@@ -162,7 +170,7 @@ const ViewCall = () => {
         },
         body: JSON.stringify({
           content: data.content,
-          id: call.id,
+          callId: call.id,
         }),
       })
         .then(async response => {
@@ -343,6 +351,7 @@ const ViewCall = () => {
 
               <div className="messagesContainer">
                 {messages.map(msg => {
+                  console.log(msg);
                   let date = new Date(msg.createdAt);
 
                   return (
