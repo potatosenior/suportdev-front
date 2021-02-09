@@ -7,7 +7,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import SaveAltIcon from "@material-ui/icons/SaveAlt";
 import ClearIcon from "@material-ui/icons/Clear";
-import url from "../services/api";
+import url from "../services/base_url";
 import Navbar from "../components/navbar";
 import clientValidator from "../utils/validators/client";
 import cpfMask from "../utils/masks/cpf";

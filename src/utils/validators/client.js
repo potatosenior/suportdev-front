@@ -43,6 +43,13 @@ const schema = yup.object().shape({
 
       return thisYear - year >= 18;
     }),
+  password: yup.string().required().label("Senha").min(8, "Senha muito curta!"),
+  passwordConfirm: yup
+    .string()
+    .required()
+    .min(8, " ")
+    .oneOf([yup.ref("password"), null], "Senhas não coincidem!")
+    .label("Confirmar Senha"),
 });
 
 export default schema;

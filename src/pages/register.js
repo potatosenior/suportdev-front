@@ -2,14 +2,14 @@ import React, { useState, useRef } from "react";
 import { Form } from "@unform/web";
 import Button from "@material-ui/core/Button";
 import Input from "../components/input";
-import url from "../services/base_url";
 import Navbar from "../components/navbar";
 import clientValidator from "../utils/validators/client";
 import cpfMask from "../utils/masks/cpf";
 import phoneMask from "../utils/masks/phone";
+import api from "../services/api";
 import "../css/createCall.css";
 
-const CreateClient = () => {
+const RegisterClient = () => {
   const date = new Date();
   // YYYY-MM-DD
   var initialDate = `${date.getFullYear()}-${
@@ -18,71 +18,58 @@ const CreateClient = () => {
 
   const createClientFormRef = useRef();
   const [name, setName] = useState("");
-  const [cpf, setCpf] = useState("");
+  const [cpf, setCpf] = useState("708.893.961-40");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
   const [birthday, setBirthday] = useState(initialDate);
   const [errors, setErrors] = useState({});
 
   const createClientHandler = async data => {
-    try {
-      const rawCpf = data.cpf.replace(/\D/g, "");
-      const rawNumber = data.phone.replace(/\D/g, "");
-      let newErrors = { ...errors };
+    let newErrors = { ...errors };
 
-      return await clientValidator
-        .validate(
-          { ...data, cpf: rawCpf, phone: rawNumber },
-          { abortEarly: false }
-        )
-        .then(async result => {
-          await fetch(url + "/clients/create", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(result),
+    return await clientValidator
+      .validate(
+        {
+          ...data,
+          cpf: data.cpf.replace(/\D/g, ""),
+          phone: data.phone.replace(/\D/g, ""),
+        },
+        { abortEarly: false }
+      )
+      .then(async result => {
+        await api
+          .post("/clients/create", result)
+          .then(response => {
+            setName("");
+            setCpf("");
+            setEmail("");
+            setPhone("");
+            setAddress("");
+            setPassword("");
+            setPasswordConfirm("");
+            setBirthday(initialDate);
+            alert(result.data.message);
           })
-            .then(response => {
-              response
-                .json()
-                .then(result => {
-                  if (response.status === 201) {
-                    setName("");
-                    setCpf("");
-                    setEmail("");
-                    setPhone("");
-                    setAddress("");
-                    setBirthday(initialDate);
-                    alert(result.message);
-                  }
-                  console.log(response.status);
-                  console.log(result);
-                  if (response.status === 400) {
-                    if (result.path) newErrors[result.path] = result.message;
-                    setErrors(newErrors);
-                  }
-                })
-                .catch(error => {
-                  throw error;
-                });
-            })
-            .catch(error => {
-              throw error;
-            });
-        })
-        .catch(error => {
-          if (error.inner) {
-            error.inner.forEach(err => {
-              newErrors[err.path] = err.message;
-            });
-            setErrors(newErrors);
-          }
-        });
-    } catch (error) {
-      console.error(error);
-    }
+          .catch(({ response }) => {
+            if (response && response.data) {
+              if (response.data.path)
+                newErrors[response.data.path] = response.data.message;
+              setErrors(newErrors);
+            }
+          });
+      })
+      .catch(error => {
+        if (error.inner) {
+          error.inner.forEach(err => {
+            newErrors[err.path] = err.message;
+          });
+          setErrors(newErrors);
+        }
+        throw error;
+      });
   };
 
   return (
@@ -99,7 +86,7 @@ const CreateClient = () => {
             value={name}
             onChange={e => {
               setName(e.target.value);
-              setErrors({ ...errors, name: false });
+              setErrors({ ...errors, name: "" });
             }}
             error={!!errors["name"]}
             helperText={errors["name"]}
@@ -112,7 +99,7 @@ const CreateClient = () => {
             value={cpf}
             onChange={e => {
               setCpf(cpfMask(e.target.value));
-              setErrors({ ...errors, cpf: false });
+              setErrors({ ...errors, cpf: "" });
             }}
             error={!!errors["cpf"]}
             helperText={errors["cpf"]}
@@ -124,7 +111,7 @@ const CreateClient = () => {
             value={email}
             onChange={e => {
               setEmail(e.target.value);
-              setErrors({ ...errors, email: false });
+              setErrors({ ...errors, email: "" });
             }}
             error={!!errors["email"]}
             helperText={errors["email"]}
@@ -137,7 +124,7 @@ const CreateClient = () => {
             value={phone}
             onChange={e => {
               setPhone(phoneMask(e.target.value));
-              setErrors({ ...errors, phone: false });
+              setErrors({ ...errors, phone: "" });
             }}
             error={!!errors["phone"]}
             helperText={errors["phone"]}
@@ -151,7 +138,7 @@ const CreateClient = () => {
             value={address}
             onChange={e => {
               setAddress(e.target.value);
-              setErrors({ ...errors, address: false });
+              setErrors({ ...errors, address: "" });
             }}
             error={!!errors["address"]}
             helperText={errors["address"]}
@@ -164,7 +151,7 @@ const CreateClient = () => {
             value={birthday}
             onChange={e => {
               setBirthday(e.target.value);
-              setErrors({ ...errors, birthday: false });
+              setErrors({ ...errors, birthday: "" });
             }}
             error={!!errors["birthday"]}
             helperText={errors["birthday"]}
@@ -174,12 +161,40 @@ const CreateClient = () => {
             inputProps={{ min: "1900-01-01" }}
           />
 
+          <Input
+            value={password}
+            onChange={e => {
+              setPassword(e.target.value);
+              setErrors({ ...errors, password: "" });
+            }}
+            error={!!errors["password"]}
+            helperText={errors["password"]}
+            type="password"
+            name="password"
+            label="Senha"
+            autoComplete="new-password"
+          />
+
+          <Input
+            value={passwordConfirm}
+            onChange={e => {
+              setPasswordConfirm(e.target.value);
+              setErrors({ ...errors, passwordConfirm: "" });
+            }}
+            error={!!errors["passwordConfirm"]}
+            helperText={errors["passwordConfirm"]}
+            type="password"
+            name="passwordConfirm"
+            label="Confirme a senha"
+            autoComplete="new-password"
+          />
+
           <Button variant="contained" color="primary" type="submit">
-            Cadastrar novo cliente
+            Finalizar
           </Button>
         </Form>
       </div>
     </div>
   );
 };
-export default CreateClient;
+export default RegisterClient;

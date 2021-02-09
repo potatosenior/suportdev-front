@@ -1,13 +1,13 @@
 import React, { useState, useRef } from "react";
 import { Form } from "@unform/web";
-import Button from "@material-ui/core/Button";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
+import Button from "@material-ui/core/Button";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import Input from "../components/input";
-import url from "../services/api";
+import url from "../services/base_url";
 import Navbar from "../components/navbar";
 import validateCPF from "../utils/validators/cpf";
 import "../css/createCall.css";

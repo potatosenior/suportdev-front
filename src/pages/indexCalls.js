@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import CallCard from "../components/callCard";
 import Navbar from "../components/navbar";
 import "../css/createCall.css";
-import url from "../services/api";
+import url from "../services/base_url";
 
 const IndexCalls = () => {
   const [calls, setCalls] = useState([]);

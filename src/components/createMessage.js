@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import { Form } from "@unform/web";
 import Input from "./input";
 import Button from "@material-ui/core/Button";
-import url from "../services/api";
+import url from "../services/base_url";
 
 const CreateMessage = ({ callView, setCallView, ...rest }) => {
   const createMessageFormRef = useRef();

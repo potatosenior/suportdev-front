@@ -14,7 +14,7 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
-import url from "../services/api";
+import url from "../services/base_url";
 import Navbar from "../components/navbar";
 import "../css/viewCall.css";
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useHistory } from "react-router-dom";
 import Navbar from "../components/navbar";
-import url from "../services/api";
+import url from "../services/base_url";
 import Table from "../components/table";
 import phoneMask from "../utils/masks/phone";
 import cpfMask from "../utils/masks/cpf";
