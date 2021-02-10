@@ -1,28 +1,28 @@
 import React, { useState, useRef } from "react";
 import { Form } from "@unform/web";
-import { setToken } from "../services/auth";
-import Navbar from "../components/navbar";
+import { useHistory } from "react-router-dom";
+import Navbar from "../../components/navbar";
 import Button from "@material-ui/core/Button";
-import Input from "../components/input";
-import api from "../services/api";
+import Input from "../../components/input";
 
-const Login = () => {
+const Login = ({ loginClient }) => {
   const loginFormRef = useRef();
-  const [login, setLogin] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState({});
+  const history = useHistory();
 
   const loginHandler = async data => {
-    await api
-      .post("/oauth/token", {
-        email: data.login,
-        password: data.password,
-      })
+    await loginClient
+      .login(data.email, data.password)
       .then(response => {
-        console.log(response.data);
-        setToken(response.data);
+        setErrors({});
+        history.push("/");
       })
       .catch(error => {
-        console.log(error);
+        if (error.data.message) {
+          setErrors({ ...errors, email: error.data.message, password: " " });
+        }
       });
   };
 
@@ -31,26 +31,30 @@ const Login = () => {
       <Navbar></Navbar>
 
       <div className="pg-content al-center">
-        <h1>Login</h1>
+        <h1>Entrar</h1>
 
         <Form className="pg-form" ref={loginFormRef} onSubmit={loginHandler}>
           <Input
-            value={login}
+            value={email}
             onChange={e => {
-              setLogin(e.target.value);
+              setEmail(e.target.value);
+              setErrors({});
             }}
-            helperText=""
+            error={!!errors["email"]}
+            helperText={errors["email"] || ""}
             autoComplete="email"
-            name="login"
-            label="Login"
+            name="email"
+            label="Email"
           />
 
           <Input
             value={password}
             onChange={e => {
               setPassword(e.target.value);
+              setErrors({});
             }}
-            helperText=""
+            error={!!errors["password"]}
+            helperText={errors["password"] || ""}
             autoComplete="password"
             name="password"
             label="Senha"

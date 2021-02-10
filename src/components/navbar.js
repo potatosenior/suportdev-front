@@ -1,6 +1,6 @@
 import React from "react";
 import { Navbar, Nav } from "react-bootstrap";
-import { isAuthenticated } from "../services/auth";
+import { isAuthenticated, logout } from "../services/auth";
 
 const NavbarComponent = () => (
   <Navbar bg="primary" variant="dark">
@@ -13,6 +13,9 @@ const NavbarComponent = () => (
           <Nav.Link href="/calls/index">Chamados</Nav.Link>
           <Nav.Link href="/clients/create">Cadastrar clientes</Nav.Link>
           <Nav.Link href="/clients/index">Clientes</Nav.Link>
+          <Nav.Link onClick={logout} href="/">
+            Sair
+          </Nav.Link>
         </>
       ) : (
         <>

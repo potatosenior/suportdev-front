@@ -15,7 +15,7 @@ const IndexCalls = () => {
         let parsedCalls = [];
 
         rawCalls.forEach(async (call, idx) => {
-          let client = await fetch(url + "/clients/index/" + call.client_id, {
+          let client = await fetch(url + "/clients/get/" + call.clientId, {
             method: "GET",
           }).then(async response => await response.json());
 

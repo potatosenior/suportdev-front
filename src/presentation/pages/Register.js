@@ -1,15 +1,13 @@
 import React, { useState, useRef } from "react";
 import { Form } from "@unform/web";
 import Button from "@material-ui/core/Button";
-import Input from "../components/input";
-import Navbar from "../components/navbar";
-import clientValidator from "../utils/validators/client";
-import cpfMask from "../utils/masks/cpf";
-import phoneMask from "../utils/masks/phone";
-import api from "../services/api";
-import "../css/createCall.css";
+import Input from "../../components/input";
+import Navbar from "../../components/navbar";
+import cpfMask from "../../utils/masks/cpf";
+import phoneMask from "../../utils/masks/phone";
+import "../../css/createCall.css";
 
-const RegisterClient = () => {
+const RegisterClient = ({ registerClient }) => {
   const date = new Date();
   // YYYY-MM-DD
   var initialDate = `${date.getFullYear()}-${
@@ -29,46 +27,44 @@ const RegisterClient = () => {
 
   const createClientHandler = async data => {
     let newErrors = { ...errors };
+    return await registerClient
+      .register({
+        ...data,
+        cpf: data.cpf.replace(/\D/g, ""),
+        phone: data.phone.replace(/\D/g, ""),
+      })
+      .then(response => {
+        console.log("response", response);
 
-    return await clientValidator
-      .validate(
-        {
-          ...data,
-          cpf: data.cpf.replace(/\D/g, ""),
-          phone: data.phone.replace(/\D/g, ""),
-        },
-        { abortEarly: false }
-      )
-      .then(async result => {
-        await api
-          .post("/clients/create", result)
-          .then(response => {
-            setName("");
-            setCpf("");
-            setEmail("");
-            setPhone("");
-            setAddress("");
-            setPassword("");
-            setPasswordConfirm("");
-            setBirthday(initialDate);
-            alert(result.data.message);
-          })
-          .catch(({ response }) => {
-            if (response && response.data) {
-              if (response.data.path)
-                newErrors[response.data.path] = response.data.message;
-              setErrors(newErrors);
-            }
-          });
+        if (response) {
+          setName("");
+          setCpf("");
+          setEmail("");
+          setPhone("");
+          setAddress("");
+          setPassword("");
+          setPasswordConfirm("");
+          setBirthday(initialDate);
+          setErrors({});
+          alert(response.data.message);
+        }
       })
       .catch(error => {
-        if (error.inner) {
-          error.inner.forEach(err => {
-            newErrors[err.path] = err.message;
-          });
-          setErrors(newErrors);
+        if (error) {
+          if (error.inner) {
+            // yup error
+            error.inner.forEach(err => {
+              newErrors[err.path] = err.message;
+            });
+            setErrors(newErrors);
+          }
+          if (error.data) {
+            // server error
+            if (error.data.path)
+              newErrors[error.data.path] = error.data.message;
+            setErrors(newErrors);
+          }
         }
-        throw error;
       });
   };
 

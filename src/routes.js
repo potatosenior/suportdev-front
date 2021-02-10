@@ -1,13 +1,13 @@
 import React from "react";
 import Home from "./pages/home";
-import CreateCall from "./pages/createCall";
 import CreateClient from "./pages/createClient";
 import IndexClients from "./pages/indexClients";
 import IndexCalls from "./pages/indexCalls";
 import ViewCall from "./pages/viewCall";
 import ViewClient from "./pages/viewClient";
-import Login from "./pages/login";
-import Register from "./pages/register";
+import Login from "./main/factories/pages/loginClient";
+import CreateCall from "./main/factories/pages/createCall";
+import Register from "./main/factories/pages/registerClient";
 import { Switch, Route, Redirect } from "react-router-dom";
 import { isAuthenticated } from "./services/auth";
 import "./css/App.css";

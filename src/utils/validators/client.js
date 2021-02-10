@@ -1,14 +1,7 @@
 import validateCPF from "./cpf";
-const yup = require("yup");
+import yup from "../yup";
 
-yup.setLocale({
-  mixed: {
-    default: "inválido!",
-    required: ({ label }) => label + " é uma informação necessária!",
-  },
-});
-
-const schema = yup.object().shape({
+const clientValidator = yup.object().shape({
   name: yup.string().required().label("Nome"),
   cpf: yup
     .string()
@@ -52,4 +45,4 @@ const schema = yup.object().shape({
     .label("Confirmar Senha"),
 });
 
-export default schema;
+export default clientValidator;

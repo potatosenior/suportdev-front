@@ -6,82 +6,46 @@ import Button from "@material-ui/core/Button";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
-import Input from "../components/input";
-import url from "../services/base_url";
-import Navbar from "../components/navbar";
-import validateCPF from "../utils/validators/cpf";
-import "../css/createCall.css";
+import Input from "../../components/input";
+import Navbar from "../../components/navbar";
+import "../../css/createCall.css";
 
-const CreateCall = () => {
-  const [calls, setCalls] = useState([]);
+const CreateCall = ({ createCall }) => {
   const createCallFormRef = useRef();
+  const [errors, setErrors] = useState({});
   const [status, setStatus] = useState("open");
   const [name, setName] = useState("");
-  const [nameError, setNameError] = useState(false);
   const [cpf, setCpf] = useState("");
-  const [clientError, setClientError] = useState(false);
   const [description, setDescription] = useState("");
-  const [descriptionError, setDescriptionError] = useState(false);
 
-  const createCall = async data => {
-    try {
-      let error = false;
-      const rawCpf = data.cpf.replace(/\D/g, "");
+  const createCallHandler = async data => {
+    await createCall
+      .create({ ...data, cpf: data.cpf.replace(/\D/g, ""), status })
+      .then(result => {
+        setName("");
+        setCpf("");
+        setDescription("");
+        setStatus("open");
+        setErrors({});
 
-      if (data.name === "") {
-        setNameError(true);
-        error = true;
-      }
-      if (data.cpf === "" || !validateCPF(rawCpf)) {
-        setClientError(true);
-        error = true;
-      }
-      if (data.description === "") {
-        setDescriptionError(true);
-        error = true;
-      }
-
-      if (error) return;
-
-      const formData = {
-        name: data.name,
-        cpf: rawCpf,
-        description: data.description,
-        status: status,
-      };
-
-      await fetch(url + "/calls/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
+        alert("Chamado criado com sucesso!");
       })
-        .then(response => {
-          response
-            .json()
-            .then(result => {
-              if (!result.error) {
-                var newCalls = [...calls, result.data];
-                setCalls(newCalls);
-                setName("");
-                setCpf("");
-                setDescription("");
-                setStatus("open");
-              }
+      .catch(error => {
+        const newErrors = { ...errors };
 
-              alert(result.message);
-            })
-            .catch(e => {
-              console.log("error: ", e);
-            });
-        })
-        .catch(e => {
-          console.log("error: ", e);
-        });
-    } catch (error) {
-      console.log("error: ", error);
-    }
+        if (error.inner) {
+          // yup error
+          error.inner.forEach(err => {
+            newErrors[err.path] = err.message;
+          });
+          setErrors(newErrors);
+        }
+        if (error.data) {
+          // server error
+          if (error.data.path) newErrors[error.data.path] = error.data.message;
+          setErrors(newErrors);
+        }
+      });
   };
 
   const cpfMask = value => {
@@ -98,15 +62,19 @@ const CreateCall = () => {
       <Navbar></Navbar>
 
       <div className="pg-content al-center">
-        <Form className="pg-form" ref={createCallFormRef} onSubmit={createCall}>
+        <Form
+          className="pg-form"
+          ref={createCallFormRef}
+          onSubmit={createCallHandler}
+        >
           <Input
             value={name}
             onChange={e => {
               setName(e.target.value);
-              setNameError(false);
+              setErrors({ ...errors, name: "" });
             }}
-            error={nameError}
-            helperText="Insira o seu nome"
+            error={!!errors["name"]}
+            helperText={errors["name"]}
             name="name"
             label="Nome"
           />
@@ -114,10 +82,10 @@ const CreateCall = () => {
             value={cpf}
             onChange={e => {
               setCpf(cpfMask(e.target.value));
-              setClientError(false);
+              setErrors({ ...errors, cpf: "" });
             }}
-            error={clientError}
-            helperText="Insira o cpf do cliente"
+            error={!!errors["cpf"]}
+            helperText={errors["cpf"]}
             name="cpf"
             label="Cpf do cliente"
           />
@@ -125,10 +93,10 @@ const CreateCall = () => {
             value={description}
             onChange={e => {
               setDescription(e.target.value);
-              setDescriptionError(false);
+              setErrors({ ...errors, description: "" });
             }}
-            error={descriptionError}
-            helperText="Insira uma descrição do chamado"
+            error={!!errors["description"]}
+            helperText={errors["description"]}
             multiline={true}
             rows={4}
             name="description"
